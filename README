@@ -1,0 +1,10 @@
+requirements
+ * PAlib 0912XX
+ * devkitARM r27
+ * libnds 1.4.0
+ * libfat-nds 1.0.6
+ * dswifi 0.3.11
+ * libfilesystem 0.9.4
+ * libmiriko 0.9.7
+ * maxmod-nds 1.0.6
+ * default.arm7 0.5.8
