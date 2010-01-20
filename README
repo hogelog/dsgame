@@ -1,10 +1,31 @@
-requirements
- * PAlib 0912XX
+= dsgame demo
+Nintendo DS Game Demo includes Lua.
+
+== requirements
  * devkitARM r27
  * libnds 1.4.0
  * libfat-nds 1.0.6
  * dswifi 0.3.11
  * libfilesystem 0.9.4
- * libmiriko 0.9.7
  * maxmod-nds 1.0.6
  * default.arm7 0.5.8
+  - http://www.devkitpro.org/
+ * PAlib 0912XX
+  - http://palib-dev.com/
+ * lua-5.1.4
+  - http://www.lua.org/
+ * DeSmuME 0.9.5
+  - http://desmume.org/
+ * GBA Movie Player (Compact Flash) DLDI, dlditool
+  - http://chishm.drunkencoders.com/DLDI/
+  
+
+== build
+ * setup devkitPro and PAlib
+ * copy lua-5.1.4/ to dsgame/source
+ * remove lua.c, luac.c from dsgame/source/lua-5.1.4/src
+ * execute build.bat
+
+== run
+ * copy DeSmuME_dev.exe, mpcf.dldi, dlditool.exe to dsgame/
+ * execute run.bat

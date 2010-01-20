@@ -23,9 +23,9 @@ ARM7_SELECTED := ARM7_MP3
 # icon for your project too!
 #---------------------------------------------------------------------------------
 
-TEXT1 := PAlib Project
-TEXT2 := Change this text
-TEXT3 := for your project!
+TEXT1 := Nintendo DS Game Demo
+TEXT2 := benchmark of Lua programs
+TEXT3 := by hogelog
 
 #---------------------------------------------------------------------------------
 # TARGET is the name of the file to output
