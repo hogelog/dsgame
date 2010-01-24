@@ -38,9 +38,9 @@ TEXT3 := by hogelog
 
 TARGET      := $(shell basename $(CURDIR))
 BUILD       := build
-SOURCES     := source data gfx/bin source/lua-5.1.4/src
-INCLUDES    := include build data gfx
-AUDIO       := audio
+SOURCES     := source source/lua-5.1.4/src
+INCLUDES    := include build source/lua-5.1.4/src
+AUDIO       := 
 RELEASEPATH := 
 
 #---------------------------------------------------------------------------------
