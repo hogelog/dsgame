@@ -36,7 +36,7 @@ TEXT3 := by hogelog
 # RELEASEPATH is the output directory (Optional)
 #---------------------------------------------------------------------------------
 
-TARGET      := $(shell basename $(CURDIR))
+TARGET      := dsgame
 BUILD       := build
 SOURCES     := source source/lua-5.1.4/src
 INCLUDES    := include build source/lua-5.1.4/src

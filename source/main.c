@@ -28,8 +28,6 @@ __attribute__((noinline)) static int lua_prfend(lua_State *L) {
 }
 
 inline static void draw(int x, int y, int r, int g, int b) {
-  //u16 *buf = VRAM_A + y*SCREEN_WIDTH + x;
-  //*buf = RGB15(r, g, b);
   PA_Put16bitPixel(0, x, y, PA_RGB(r, g, b));
 }
 
@@ -39,9 +37,8 @@ __attribute__((noinline)) static int lua_draw(lua_State *L) {
   int r = luaL_checkint(L, -3);
   int g = luaL_checkint(L, -2);
   int b = luaL_checkint(L, -1);
-  draw(x, y, r, g, b);
 
-  //printf("$ (%d,%d) [%d,%d,%d]\n", x, y, r, g, b);
+  draw(x, y, r, g, b);
 
   return 0;
 }
