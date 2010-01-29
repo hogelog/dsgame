@@ -5,42 +5,43 @@ NSUBSAMPLES = 2
 NAO_SAMPLES = 8
 
 math.randomseed(100)
+local function draw(x, y, r, g, b)
+  print(x, y, r, g, b)
+end
 
-if not(draw) then
-  function draw(x, y, r, g, b)
-    print(x, y, r, g, b)
-  end
+if (dslib.draw) then
+  draw = dslib.draw
 end
 
 -- vec
 
-function vec(ix, iy, iz)
+local function vec(ix, iy, iz)
 	return {x = ix, y = iy, z = iz}
 end
 
-function vadd(a, b)
+local function vadd(a, b)
 	return vec(a.x + b.x, a.y + b.y, a.z + b.z)
 end
 
-function vsub(a, b)
+local function vsub(a, b)
 	return vec(a.x - b.x, a.y - b.y, a.z - b.z)
 end
 
-function vcross(a, b)
+local function vcross(a, b)
 	return vec(	a.y * b.z - a.z * b.y,
 				a.z * b.x - a.x * b.z,
 				a.x * b.y - a.y * b.x )
 end
 
-function vdot(a, b)
+local function vdot(a, b)
 	return (a.x * b.x + a.y * b.y + a.z * b.z)
 end
 
-function vlength(a)
+local function vlength(a)
 	return math.sqrt(a.x * a.x + a.y * a.y + a.z * a.z)
 end
 
-function vnormalize(a)
+local function vnormalize(a)
 	local len = vlength(a)
 	local v = vec(a.x, a.y, a.z)
 	
@@ -53,7 +54,7 @@ function vnormalize(a)
 	return v;
 end
 
-function vprint(vname, a)
+local function vprint(vname, a)
 	print( string.format("%s=(%f,%f,%f)", vname, a.x, a.y, a.z) )
 end
 
@@ -70,11 +71,11 @@ vprint("cross", vcross(v2, v3))
 
 
 -- Sphere
-function Sphere(icenter, iradius)
+local function Sphere(icenter, iradius)
 	return {center = icenter, radius = iradius}
 end
 
-function Sphere_intersect(sphere, ray, isect)
+local function Sphere_intersect(sphere, ray, isect)
 	local rs = vsub(ray.org, sphere.center)
 	local B = vdot(rs, ray.dir)
 	local C = vdot(rs, rs) - (sphere.radius * sphere.radius)
@@ -96,11 +97,11 @@ function Sphere_intersect(sphere, ray, isect)
 	end
 end
 
-function Plane(ip, inorm)
+local function Plane(ip, inorm)
 	return {p = ip, n = inorm}
 end
 
-function Plane_intersect(aplane, ray, isect)
+local function Plane_intersect(aplane, ray, isect)
 	local d = -vdot(aplane.p, aplane.n)
 	local v = vdot(ray.dir, aplane.n)
 	
@@ -120,15 +121,15 @@ function Plane_intersect(aplane, ray, isect)
 	end
 end
 
-function Ray(iorg, idir)
+local function Ray(iorg, idir)
 	return {org = iorg, dir = idir}
 end
 
-function Isect()
+local function Isect()
 	return {t = 1000000.0, hit = false, p = vec(0.0, 0.0, 0.0), n = vec(0.0, 0.0, 0.0) }
 end
 
-function clamp(f)
+local function clamp(f)
 	local i = f * 31.5
 	if i > 31.0 then
 		i = 31.0
@@ -139,7 +140,7 @@ function clamp(f)
 	return math.floor(i + 0.5) -- round is not defined
 end
 
-function orthoBasis( basis, n )
+local function orthoBasis( basis, n )
 	basis[2] = vec(n.x, n.y, n.z)
 	basis[1] = vec(0.0, 0.0, 0.0)
 	
@@ -163,7 +164,7 @@ end
 
 -- ==========
 
-function init_scene()
+local function init_scene()
 	spheres = {}
 	spheres[0]  = Sphere(vec(-2.0, 0.0, -3.5), 0.5)
 	spheres[1]  = Sphere(vec(-0.5, 0.0, -3.0), 0.5)
@@ -172,7 +173,7 @@ function init_scene()
 end
 
 
-function ambient_occlusion( isect )
+local function ambient_occlusion( isect )
 	local basis = {}
 	orthoBasis( basis, isect.n )
 	
@@ -220,7 +221,7 @@ function ambient_occlusion( isect )
 	return vec(occlusion, occlusion, occlusion)
 end
 
-function render(buffer, w, h, nsubsamples)
+local function render(buffer, w, h, nsubsamples)
 	local cnt = 0;
 	
 	for y = 0, h - 1 do
@@ -270,7 +271,7 @@ function render(buffer, w, h, nsubsamples)
 	-- end per pixel
 end
 
-function saveppm( fname, w, h, buffer )
+local function saveppm( fname, w, h, buffer )
 	local f = io.open( fname, "w" )
 	f:write("P6\n")
 	f:write( string.format("%d %d\n", w, h) )
