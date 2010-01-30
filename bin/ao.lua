@@ -5,8 +5,8 @@ NSUBSAMPLES = 2
 NAO_SAMPLES = 8
 
 math.randomseed(100)
-local function draw(x, y, r, g, b)
-  print(x, y, r, g, b)
+local function draw(screen, x, y, r, g, b)
+  print(scren, x, y, r, g, b)
 end
 
 if (dslib.draw) then
@@ -265,7 +265,7 @@ local function render(buffer, w, h, nsubsamples)
 			local b = rad.z / (nsubsamples * nsubsamples)
 		
 			--buffer[x + y * w] = string.char( clamp(r), clamp(g), clamp(b) )
-			draw(x, y, clamp(r), clamp(g), clamp(b) )
+			draw(0, x, y, clamp(r), clamp(g), clamp(b) )
 		end -- x
 	end -- y
 	-- end per pixel
