@@ -1,9 +1,9 @@
-local MAX_X = 31
-local MAX_Y = 23
-local SCREEN_W = 256
-local SCREEN_H = 192
-local TEXT_W = SCREEN_W / MAX_X
-local TEXT_H = SCREEN_H / MAX_Y
+MAX_X = 31
+MAX_Y = 23
+SCREEN_W = 256
+SCREEN_H = 192
+TEXT_W = SCREEN_W / MAX_X
+TEXT_H = SCREEN_H / MAX_Y
 
 local profile_start = dslib.profile_start
 local profile_end = dslib.profile_end

@@ -37,18 +37,39 @@ __attribute__((noinline)) LUA_FUNC int lua_profileend(lua_State *L) {
   return 0;
 }
 
-inline static void draw(int x, int y, int r, int g, int b) {
-  PA_Put16bitPixel(0, x, y, PA_RGB(r, g, b));
+inline static void draw(u8 screen, s16 x, s16 y, u16 color) {
+  PA_Put16bitPixel(screen, x, y, color);
 }
 
-LUA_FUNC int lua_draw(lua_State *L) {
-  int x = luaL_checkint(L, -5);
-  int y = luaL_checkint(L, -4);
-  int r = luaL_checkint(L, -3);
-  int g = luaL_checkint(L, -2);
-  int b = luaL_checkint(L, -1);
+inline static void drawline(u8 screen, s16 x1, s16 y1, s16 x2, s16 y2, u16 color) {
+  PA_Draw16bitLine(screen, x1, y1, x2, y2, color);
+}
 
-  draw(x, y, r, g, b);
+
+LUA_FUNC int lua_draw(lua_State *L) {
+  u8 screen = luaL_checkint(L, -6);
+  u16 x = luaL_checkint(L, -5);
+  u16 y = luaL_checkint(L, -4);
+  u8 r = luaL_checkint(L, -3);
+  u8 g = luaL_checkint(L, -2);
+  u8 b = luaL_checkint(L, -1);
+
+  draw(screen, x, y, PA_RGB(r, g, b));
+
+  return 0;
+}
+
+LUA_FUNC int lua_drawline(lua_State *L) {
+  u8 screen = luaL_checkint(L, -8);
+  u16 x1 = luaL_checkint(L, -7);
+  u16 y1 = luaL_checkint(L, -6);
+  u16 x2 = luaL_checkint(L, -5);
+  u16 y2 = luaL_checkint(L, -4);
+  u8 r = luaL_checkint(L, -3);
+  u8 g = luaL_checkint(L, -2);
+  u8 b = luaL_checkint(L, -1);
+
+  drawline(screen, x1, y1, x2, y2, PA_RGB(r, g, b));
 
   return 0;
 }
@@ -153,6 +174,7 @@ static const luaL_Reg ds_funcs[] = {
   {"profile_start", lua_profilestart},
   {"profile_end", lua_profileend},
   {"draw", lua_draw},
+  {"drawline", lua_drawline},
   {"wait", lua_waitvbl},
   {"ls", lua_ls},
   {"vram_mode", lua_vram_mode},
@@ -173,21 +195,18 @@ typedef struct {
   lua_State *L;
 } GameState;
 
-static void loadlua(GameState *state, const char *luapath) {
+static int loadlua(GameState *state, const char *luapath) {
+  state->luapath = (char*)luapath;
   iprintf("load: %s\n", luapath);
-  if (luaL_loadfile(state->L, luapath)) {
-    iprintf("cannot load lua\n");
-    exit(1);
-  }
+  return (luaL_loadfile(state->L, luapath));
 }
 
-static s32 runlua(GameState *state) {
+static int runlua(GameState *state) {
   return lua_pcall(state->L, 0, LUA_MULTRET, 0);
 }
 
-static void testlua(GameState *state, const char *luapath) {
-  loadlua(state, luapath);
-  runlua(state);
+static int testlua(GameState *state, const char *luapath) {
+  return loadlua(state, luapath) || runlua(state);
 }
 
 static void init_lua(GameState *state) {
@@ -225,20 +244,26 @@ GameState *init_state() {
   return &state;
 }
 
-void mainloop(GameState *state) {
-  testlua(state, "game.lua");
-
-  while(1) {
-    PA_WaitForVBL();
+static void luareport(GameState *state) {
+  lua_State *L = state->L;
+  if (!lua_isnil(L, -1)) {
+    const char *msg = lua_tostring(L, -1);
+    if (msg == NULL) msg = "(error object is not a string)";
+    iprintf("error: %s\n", msg);
+    lua_pop(L, 1);
   }
 }
 
 int main(int argc, char **argv) {
   while (1) {
-    if (setjmp(mainbuf) == 0) {
-      GameState *state = init_state();
+    GameState *state;
+    setjmp(mainbuf);
 
-      mainloop(state);
+    state = init_state();
+    if (testlua(state, "game.lua")) {
+      luareport(state);
+      while (1)
+        PA_WaitForVBL();
     }
   }
 
