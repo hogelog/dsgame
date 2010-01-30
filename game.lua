@@ -1,6 +1,8 @@
+local MAX_X = 31
 local MAX_Y = 23
 local SCREEN_W = 256
 local SCREEN_H = 192
+local TEXT_W = SCREEN_W / MAX_X
 local TEXT_H = SCREEN_H / MAX_Y
 
 local profile_start = dslib.profile_start
@@ -28,31 +30,33 @@ local function execute(file, ...)
   end
 end
 
-local function text_list(list)
-  for i,v in ipairs(list) do
-    dslib.text(0, 0, i-1, v)
-  end
-end
-
 local function select_list(list)
-  dslib.cleartext(0)
-  text_list(list)
-  while true do
-    local function selected(x, y)
-      if x and y then
-        local line = math.floor(y / TEXT_H)
-        if line < #list then
-          return line, list[line+1]
-        end
+  local function text_list()
+    for i,v in ipairs(list) do
+      dslib.text(0, 0, i-1, v)
+    end
+  end
+  local function selected(x, y)
+    if x and y then
+      local line = math.floor(y / TEXT_H)
+      if line < #list then
+        return line, list[line+1]
       end
     end
+  end
+
+  dslib.text_mode()
+
+  dslib.cleartext(0)
+  text_list()
+  while true do
     local line = selected(dslib.stylus_released())
     if line then
       return list[line+1]
     end
     line = selected(dslib.stylus_held())
     if line then
-      text_list(list)
+      text_list()
       dslib.texttilecol(0, 2)
       dslib.text(0, 0, line, list[line+1])
       dslib.texttilecol(0, 0)
@@ -60,8 +64,6 @@ local function select_list(list)
     wait()
   end
 end
-
-dslib.text_mode()
 
 while true do
   local files = {dslib.ls()}

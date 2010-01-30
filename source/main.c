@@ -141,7 +141,6 @@ LUA_FUNC int lua_ls(lua_State *L) {
     char *dname = ent->d_name;
     stat(dname, &statbuf);
     if (S_ISDIR(statbuf.st_mode)) continue;
-    if (!strstr(dname, ".lua")) continue;
     lua_pushstring(L, dname);
     ++filecount;
   }
