@@ -41,7 +41,7 @@ BUILD       := build
 SOURCES     := source source/lua-5.1.4/src
 INCLUDES    := include build source/lua-5.1.4/src
 AUDIO       := 
-RELEASEPATH := 
+RELEASEPATH := bin
 
 #---------------------------------------------------------------------------------
 # If you need to change other parts of the make process, see the PA_Makefile:
@@ -55,5 +55,6 @@ CFLAGS		:= $(CFLAGS) -DLUA_ANSI
 LIBS			:= $(LIBS) -lm
 
 run:
-	dlditool.exe mpcf.dldi dsgame.nds
-	./DeSmuME_dev.exe dsgame.nds
+	dlditool.exe mpcf.dldi $(OUTPUT).nds
+	cd $(RELEASEPATH)
+	./DeSmuME_dev.exe $(OUTPUT).nds
