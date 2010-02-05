@@ -50,17 +50,17 @@ local function select_list(list)
   dslib.cleartext(0)
   text_list()
   while true do
-    local released = dslib.stylus.released
-    local held = dslib.stylus.held
     local x, y = dslib.stylus.x, dslib.stylus.y
     local line = selected(x, y)
-    if released and line then
+    if dslib.stylus.released and line then
       return list[line+1]
-    elseif held and line then
+    elseif dslib.stylus.held and line then
       text_list()
       dslib.texttilecol(0, 2)
       dslib.text(0, 0, line, list[line+1])
       dslib.texttilecol(0, 0)
+    elseif dslib.pad.newpress.start then
+      dslib.softreset()
     end
     wait()
   end
