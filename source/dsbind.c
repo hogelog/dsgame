@@ -93,7 +93,7 @@ LUA_FUNC int lua_drawrect(lua_State *L) {
 #define UPDATEI(i,f) \
   lua_pushinteger(L, (i)); \
   lua_setfield(L, -2, (f))
-static void update_pad(lua_State *L) {
+LUA_FUNC int update_pad(lua_State *L) {
 #define UPDATEPAD(t, s) \
   lua_getfield(L, -1, t); \
   UPDATEB((s).A, "a"); \
@@ -118,9 +118,10 @@ static void update_pad(lua_State *L) {
   UPDATEPAD("released", Pad.Released);
   UPDATEPAD("newpress", Pad.Newpress);
 #undef UPDATEPAD
+  return 0;
 }
 
-static void update_stylus(lua_State *L) {
+LUA_FUNC int update_stylus(lua_State *L) {
   lua_getglobal(L, DSLIBNAME);
   lua_getfield(L, -1, "stylus");
 
@@ -141,6 +142,7 @@ static void update_stylus(lua_State *L) {
   UPDATEI(Stylus.Downtime, "downtime");
   UPDATEI(Stylus.Uptime, "uptime");
   UPDATEI(Stylus.DblClick, "dblclick");
+  return 0;
 }
 #undef UPDATEI
 #undef UPDATEB
@@ -242,11 +244,12 @@ static const luaL_Reg ds_funcs[] = {
   {"texttilecol", lua_texttilecol},
   {"cleartext", lua_cleartext},
   {"softreset", lua_softreset},
+  {"update_stylus", update_stylus},
+  {"update_pad", update_pad},
   {NULL, NULL}
 };
 
-LUALIB_API int luaopen_dslib(lua_State *L) {
-  luaL_register(L, DSLIBNAME, ds_funcs);
+static void init_input(lua_State *L) {
   lua_getglobal(L, DSLIBNAME);
 
   lua_createtable(L, 0, 3);
@@ -262,5 +265,13 @@ LUALIB_API int luaopen_dslib(lua_State *L) {
   lua_setfield(L, -2, "stylus");
 
   lua_pop(L, 1);
+
+  update_pad(L);
+  update_stylus(L);
+}
+
+LUALIB_API int luaopen_dslib(lua_State *L) {
+  luaL_register(L, DSLIBNAME, ds_funcs);
+  init_input(L);
   return 1;
 }

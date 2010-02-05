@@ -8,7 +8,6 @@ TEXT_H = SCREEN_H / MAX_Y
 local profile_start = dslib.profile_start
 local profile_end = dslib.profile_end
 local wait = dslib.wait
-
 local function execute(file, ...)
   local code,err = loadfile(file)
   if err then
@@ -50,6 +49,7 @@ local function select_list(list)
   dslib.cleartext(0)
   text_list()
   while true do
+    wait()
     local x, y = dslib.stylus.x, dslib.stylus.y
     local line = selected(x, y)
     if dslib.stylus.released and line then
@@ -62,15 +62,14 @@ local function select_list(list)
     elseif dslib.pad.newpress.start then
       dslib.softreset()
     end
-    wait()
   end
 end
 
 while true do
+  wait()
   local files = {dslib.ls()}
   if files and type(files)=="table" then
     local selected = select_list(files)
     execute(selected)
   end
-  wait()
 end
