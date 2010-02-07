@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
     setjmp(resetbuf);
 
     init_state(&state);
-    if (runlua(&state, "game.lua")) {
+    if (runlua(&state, "boot.lua")) {
       luareport(&state);
       while (1)
         PA_WaitForVBL();
