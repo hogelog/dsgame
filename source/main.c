@@ -59,16 +59,12 @@ static int runlua(GameState *state, const char *luapath) {
 }
 
 int main(int argc, char **argv) {
-  while (1) {
-    static GameState state = {NULL, NULL};
-    setjmp(resetbuf);
+  static GameState state = {NULL, NULL};
+  setjmp(resetbuf);
 
-    init_state(&state);
-    if (runlua(&state, "boot.lua")) {
-      luareport(&state);
-      while (1)
-        PA_WaitForVBL();
-    }
+  init_state(&state);
+  if (runlua(&state, "boot.lua")) {
+    luareport(&state);
   }
 
   return 0;

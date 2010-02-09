@@ -160,6 +160,17 @@ LUA_FUNC int lua_vram_mode(lua_State *L) {
   return 0;
 }
 
+LUA_FUNC int lua_dblvram_mode(lua_State *L) {
+  PA_SetBgPalCol(0, 0, PA_RGB(0, 0, 0));
+  PA_Init16bitDblBuffer(0, 3);
+  return 0;
+}
+
+LUA_FUNC int lua_swapbuffer(lua_State *L) {
+  PA_16bitSwapBuffer(0);
+  return 0;
+}
+
 LUA_FUNC int lua_text_mode(lua_State *L) {
   PA_InitText(0, 0);
   PA_SetTextCol(0, 31, 31, 31);
@@ -238,6 +249,8 @@ static const luaL_Reg ds_funcs[] = {
   {"wait", lua_waitvbl},
   {"ls", lua_ls},
   {"vram_mode", lua_vram_mode},
+  {"dblvram_mode", lua_dblvram_mode},
+  {"swapbuffer", lua_swapbuffer},
   {"text_mode", lua_text_mode},
   {"text", lua_text},
   {"textcol", lua_textcol},
